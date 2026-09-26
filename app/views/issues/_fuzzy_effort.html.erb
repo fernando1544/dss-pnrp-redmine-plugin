@@ -1,0 +1,38 @@
+<%
+  active_process = @issue.active_next_release_process
+  effort = @issue.nrp_fuzzy_effort_for(active_process) if active_process
+  is_related = active_process && active_process.issues.exists?(@issue.id)
+%>
+
+<% if is_related || effort.present? %>
+  <hr />
+  <div class="box" style="margin-top: 15px; border-left: 4px solid #169; background: #fbfbfb;">
+    <h3 style="margin-top: 0; color: #2c3e50;">
+      <%= l(:label_nrp_process, default: "Proceso de Próximo Lanzamiento") %>:
+      <strong><%= active_process ? active_process.name : effort.next_release_process.name %></strong>
+    </h3>
+
+    <div class="attributes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 10px;">
+      <div class="attribute" style="padding: 8px; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <span style="font-weight: bold; color: #7f8c8d; display: block; font-size: 11px;">Esfuerzo imp. mínimo (e1)</span>
+        <span style="font-size: 16px; font-weight: bold; color: #2c3e50;"><%= effort ? effort.e1 : '-' %> hrs</span>
+      </div>
+      <div class="attribute" style="padding: 8px; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <span style="font-weight: bold; color: #27ae60; display: block; font-size: 11px;">Esfuerzo óptimo (e2)</span>
+        <span style="font-size: 16px; font-weight: bold; color: #2c3e50;"><%= effort ? effort.e2 : '-' %> hrs</span>
+      </div>
+      <div class="attribute" style="padding: 8px; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <span style="font-weight: bold; color: #e67e22; display: block; font-size: 11px;">Esfuerzo conservador (e3)</span>
+        <span style="font-size: 16px; font-weight: bold; color: #2c3e50;"><%= effort ? effort.e3 : '-' %> hrs</span>
+      </div>
+      <div class="attribute" style="padding: 8px; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <span style="font-weight: bold; color: #c0392b; display: block; font-size: 11px;">Esfuerzo imp. máximo (e4)</span>
+        <span style="font-size: 16px; font-weight: bold; color: #2c3e50;"><%= effort ? effort.e4 : '-' %> hrs</span>
+      </div>
+      <div class="attribute" style="padding: 8px; background: #eef7fa; border: 1px solid #bce8f1; border-radius: 4px;">
+        <span style="font-weight: bold; color: #31708f; display: block; font-size: 11px;">Esfuerzo Real</span>
+        <span style="font-size: 16px; font-weight: bold; color: #2c3e50;"><%= effort ? effort.real_effort : 0.0 %> hrs</span>
+      </div>
+    </div>
+  </div>
+<% end %>
