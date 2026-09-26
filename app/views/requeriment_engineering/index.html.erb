@@ -50,32 +50,44 @@
 <!--Tabla de Proximos lanzamientos-->
 <table class="table table-striped">
   <thead class="thead-light">
-    <h5> Procesos de Próximos Lanzamientos </h5>
+    <h5 style="text-align center"> 
+      Procesos de Próximos Lanzamientos 
+      
+      <%= link_to '<button type="button" class="btn btn-info" style="
+              border-radius: 20px;
+              width: 26px;
+              text-align: center;
+              line-height: 0px;
+              padding: 0px;
+              color: white;">+</button>'.html_safe, new_project_next_release_process_path(@project), class: "text-light font-weight-bold" %>
+      
+    </h5>
   </thead>
 
   <tbody> 
     <tr>
       <th class="text-center"> ID </th>
-      <th class="text-center"> Finalizo </th>
+      <th class="text-center"> Estado </th>
       <th class="text-center"> Fecha de Inicio (Start date) </th>
       <th class="text-center"> Fecha de Actualización (Updated date) </th>
     </tr>
-          <tr>   
-            <td align="center">
-            Next Release Process 1
-            </td>
-            <td align="center">
-            Si
-            </td>
-            <td align="center">
-            2022-03-20 20:01:40 UTC
-            </td>
-            <td align="center">
-            2022-03-20 20:05:23 UTC
-            </td>
-          </tr>
+      <% @nrps.each do |nrp| %>
+        <tr>
+          <td align="center">
+            <%= link_to "#{'Next Release Process ' + nrp.id.to_s}", next_release_process_path(nrp) %>
+          </td>   
+          <td align="center">
+            <%= nrp.human_status %>
+          </td>
+          <td align="center">
+            <%= nrp.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') rescue nrp.created_at %>
+          </td>
+          <td align="center">
+            <%= nrp.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC') rescue nrp.updated_at %>
+          </td>
+        </tr>
+      <% end %>
   </tbody>
-
 </table>
 
 <hr>

@@ -1,0 +1,46 @@
+<%
+  active_process = @issue.active_next_release_process
+  is_related = active_process && active_process.issues.exists?(@issue.id)
+  effort = @issue.nrp_fuzzy_effort_for(active_process) if active_process
+%>
+
+<% if is_related %>
+  <div class="box" style="margin-top: 15px; border-left: 4px solid #169; background: #fdfdfd;">
+    <h4 style="margin-top: 0; color: #2c3e50;">
+      Estimación Difusa de Esfuerzo (Proceso: <strong><%= active_process.name %></strong>)
+    </h4>
+    <p style="font-size: 12px; color: #7f8c8d; margin-bottom: 12px;">
+      Defina el esfuerzo difuso trapecial cumpliendo la condición matemática:
+      <code>e1 &le; e2 &le; e3 &le; e4</code>.
+    </p>
+
+    <%= hidden_field_tag 'nrp_fuzzy_effort[next_release_process_id]', active_process.id %>
+
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      <p style="flex: 1; min-width: 140px;">
+        <label style="font-weight: bold;">Esfuerzo imp. mínimo (e1):</label><br>
+        <%= number_field_tag 'nrp_fuzzy_effort[e1]', effort ? effort.e1 : 0.0, step: 0.1, min: 0, style: 'width: 100%;' %>
+      </p>
+
+      <p style="flex: 1; min-width: 140px;">
+        <label style="font-weight: bold;">Esfuerzo óptimo (e2):</label><br>
+        <%= number_field_tag 'nrp_fuzzy_effort[e2]', effort ? effort.e2 : 0.0, step: 0.1, min: 0, style: 'width: 100%;' %>
+      </p>
+
+      <p style="flex: 1; min-width: 140px;">
+        <label style="font-weight: bold;">Esfuerzo conservador (e3):</label><br>
+        <%= number_field_tag 'nrp_fuzzy_effort[e3]', effort ? effort.e3 : 0.0, step: 0.1, min: 0, style: 'width: 100%;' %>
+      </p>
+
+      <p style="flex: 1; min-width: 140px;">
+        <label style="font-weight: bold;">Esfuerzo imp. máximo (e4):</label><br>
+        <%= number_field_tag 'nrp_fuzzy_effort[e4]', effort ? effort.e4 : 0.0, step: 0.1, min: 0, style: 'width: 100%;' %>
+      </p>
+
+      <p style="flex: 1; min-width: 140px;">
+        <label style="font-weight: bold;">Esfuerzo real:</label><br>
+        <%= number_field_tag 'nrp_fuzzy_effort[real_effort]', effort ? effort.real_effort : 0.0, step: 0.1, min: 0, style: 'width: 100%;' %>
+      </p>
+    </div>
+  </div>
+<% end %>

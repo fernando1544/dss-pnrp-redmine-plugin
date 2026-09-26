@@ -1,5 +1,120 @@
-<h2>NextReleaseProcessController#show</h2>
+<div class="titlewrapper">
+  <h4>
+    <span>Proceso de próximo lanzamiento</span>
+    <%= link_to "", index_requeriment_engineering_path(project_id: @project.id), class: "icon icon-cancel icon-only backbutton" %>
+  </h4>
+</div>
+
+<% if @nrp.in_progress? %>
+<div class="pr-board box row justify-content-center">
+  <div class="options">
+    <div class="div1">
+      <%= link_to '<button type="button" class="btn btn-info optionbutton">Iniciar proceso</button>'.html_safe, '#' %> 
+    </div>
+    <div class="div2">
+      <%= link_to '<button type="button" class="btn btn-info optionbutton">Seleccionar alternativas</button>'.html_safe, '#' %> 
+    </div>
+    <div class="div3">
+      <%= link_to 'Rechazar proceso actual', reject_next_release_process_path(@nrp), method: :post, data: { confirm: '¿Está seguro de que desea rechazar el proceso actual?' }, class: "button" %>
+    </div>
+  </div>
+</div>
+<hr>
+<% end %>
+
+<div class="pr-board box row justify-content-center">
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <h5 style="text-align center">Estado</h5>
+    </thead>
+    <tbody>
+      <tr align="center">
+        <th> ID </th>
+        <th> Nombre </th>
+        <th> Estado </th>
+        <% if @nrp.rejected? %>
+          <th> Motivo de rechazo </th>
+        <% end %>
+        <th> Fecha de inicio </th>
+        <th> Fecha de actualización </th>
+      </tr>
+      <tr align="center">   
+        <td><%= @nrp.id %></td>
+        <td><%= @nrp.name %></td>
+        <td><%= @nrp.human_status %></td>
+        <% if @nrp.rejected? %>
+          <td><%= @nrp.rejection_reason %></td>
+        <% end %>
+        <td><%= @nrp.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') rescue @nrp.created_at %></td>
+        <td><%= @nrp.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC') rescue @nrp.updated_at %></td>
+      </tr>
+    </tbody>
+  </table>
+</div> 
+
+<div class="pr-board box row justify-content-center">
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <h5 style="text-align center">Ejecuciones</h5>
+    </thead>
+    <tbody>
+      <tr align="center">
+        <th> ID </th>
+        <th> Solución creada </th>
+        <th> Fecha de inicio </th>
+      </tr>
+      <% if @nrpExecutions.any? %>
+        <% @nrpExecutions.each do |execution| %>
+          <tr align="center">   
+            <td><%= execution.id %></td>
+            <td><%= execution.try(:is_solution_created) ? 'Si' : 'No' %></td>
+            <td><%= execution.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') rescue execution.created_at %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr align="center">
+          <td colspan="3">No hay ejecuciones registradas.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pr-board box row justify-content-center">
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <h5 style="text-align center">Requerimientos del proceso de próximo lanzamiento</h5>
+    </thead>
+    <tbody>
+      <tr align="center">
+        <th> ID </th>
+        <th> Nombre </th>
+        <th> Estado </th>
+        <th> Prioridad </th>
+        <th> e1 </th>
+        <th> e2 </th>
+        <th> e3 </th>
+        <th> e4 </th>
+      </tr>
+      <% @nrprIssues.each do |pr| %>
+        <% effort = @fuzzyEfforts[pr.issue_id] %>
+        <tr align="center">   
+          <td><%= link_to pr.issue.id.to_s, issue_path(pr.issue) %></td>
+          <td><%= pr.issue.subject %></td>
+          <td><%= pr.issue.status&.name %></td>
+          <td><%= pr.issue.priority&.name %></td>
+          <td><%= effort&.e1 || 0 %></td>
+          <td><%= effort&.e2 || 0 %></td>
+          <td><%= effort&.e3 || 0 %></td>
+          <td><%= effort&.e4 || 0 %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag "bootstrap", plugin: "dss_pnrp" %>
+  <%= stylesheet_link_tag "options", plugin: "dss_pnrp" %>
+  <%= stylesheet_link_tag "titles", plugin: "dss_pnrp" %>
 <% end %>
