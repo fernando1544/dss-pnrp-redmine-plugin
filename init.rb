@@ -8,18 +8,19 @@ Redmine::Plugin.register :dss_pnrp do
   requires_redmine version_or_higher: '5.0.0'
   
   permission :requeriment_engineering, { requeriment_engineering: [:index] }, public: true
-  permission :prioritization_process, { prioritization_process: [:index,:show] }, public: true
+  permission :prioritization_process, { prioritization_process: [:index, :show] }, public: true
+  permission :next_release_process, { next_release_process: [:index, :show, :new, :create, :reject, :destroy] }, public: true
 
   project_module :prioritization_process do
     permission :see_prioritization_process, prioritization_process: :show
   end
 
+  project_module :next_release_process do
+    permission :see_next_release_process, next_release_process: :show
+  end
 
-  #Usar PROC para que solo se pueda ver si es el raiz. 
-  # :if => Proc.new { Project.current.root? }
   menu :project_menu, :requeriment_engineering, { controller: 'requeriment_engineering', action: 'index' }, caption: 'Requeriment Engineering', param: :project_id
   settings default: {'backend_address' => "http://fastapi:80"}, partial: 'settings/pnrp_settings'
-
 end
 
 require File.expand_path('../lib/dss_pnrp', __FILE__)

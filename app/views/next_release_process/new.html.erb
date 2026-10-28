@@ -1,0 +1,50 @@
+<div class="titlewrapper">
+  <h4>
+    <span>Nuevo proceso de próximo lanzamiento</span>
+    <%= link_to "", index_requeriment_engineering_path(project_id: @project['id']), class: "icon icon-cancel icon-only backbutton" %>
+  </h4>
+</div>
+
+<%= form_with url: project_next_release_process_index_path(@project), method: :post, local: true do |form| %>
+    
+    <div class="pr-board box row justify-content-center">
+        <h5>Seleccionar requerimientos</h5>
+        <table id="requirement-table" class="table w-50 mt-10">
+            <thead class="thead-light">
+                <tr style="text-align: center">
+                    <th> ID </th>
+                    <th> Asunto </th>
+                    <th> Descripcion </th>
+                    <th> 
+                      <span>Seleccionar todos</span>
+                      <input type="checkbox" id="select-all-chk">
+                    </th>
+                </tr>
+            </thead>
+                
+            <tbody>
+                <% @issues.each do |issue| %>
+                    <tr style="text-align: center">
+                        <td> <%= issue.id %> </td>
+                        <td> <%= issue.subject %> </td>
+                        <td> <%= issue.description %> </td>
+                        <td> <%= check_box_tag "issues_ids[]", issue['id'], false, :id => "issues_ids_#{issue['id']}"  %> </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class='buttons'>
+        <%= form.submit "Crear" %>
+    </div>
+    
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag "bootstrap", plugin: "dss_pnrp" %>
+  <%= stylesheet_link_tag "options", plugin: "dss_pnrp" %>
+  <%= javascript_include_tag "new_process", plugin: "dss_pnrp" %>
+  <%= stylesheet_link_tag "icons", plugin: "dss_pnrp" %>
+  <%= stylesheet_link_tag "titles", plugin: "dss_pnrp" %>
+<% end %>
